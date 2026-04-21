@@ -4,3 +4,4 @@ numpy
 scikit-learn
 GPy
 matplotlib
+seaborn
