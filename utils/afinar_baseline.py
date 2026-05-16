@@ -33,13 +33,19 @@ def tune_knn_baseline(dataset_name, x_train, y_train, x_test, y_test, iterations
             evaluator = PerformanceEvaluator(dataset_name)
 
             if dataset_name == "UJI1":
-                # en UJI1 los índices 0 y 1 son x e y; el índice 2 es el piso; el índice 3 es el edificio
+                # forzamos la conversión a array de np para poder hacer el slicing
+                y_test_arr = y_test.values if isinstance(y_test, pd.DataFrame) else np.asarray(y_test)
+                y_pred_arr = np.asarray(y_pred)
+                # recordamos que nuestro target se compone de: x, y, z, piso, edificio
+                # en UJI1 los índices 0 y 1 son x e y; el índice 3 es el piso; el índice 4 es el edificio
+                # recordamos que los slicing funcionan como el primer valor incluido, el segundo valor excluido
+                # y que el índice inicial es el 0
                 # redondeamos
-                y_pred_labels = np.round(y_pred[:, 2:4])
+                y_pred_labels = np.round(y_pred_arr[:, [4, 3]])
                 # llamamos al método del objeto
                 # para UJI1 retorna accuracy de piso y edificio, MAE en 2D, percentiles 75 y 95
-                res = evaluator.calculate_precision(y_test[:, 0:2], y_pred[:, 0:2],
-                                                   building_floor_true=y_test[:, 2:4],
+                res = evaluator.calculate_precision(y_test_arr[:, 0:2], y_pred_arr[:, 0:2],
+                                                   building_floor_true=y_test_arr[:, [4, 3]],
                                                    building_floor_pred=y_pred_labels)
             else:
                 # para MAN1 retorna MAE en 2D, percentiles 75 y 95

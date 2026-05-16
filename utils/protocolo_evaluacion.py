@@ -21,7 +21,9 @@ class PerformanceEvaluator:
         # aplicación de la lógica jerárquica para UJI1
         if self.dataset_name == "UJI1":
             # calculamos aciertos de clasificación
+            # edificio
             b_hit = (building_floor_true[:, 0] == building_floor_pred[:, 0])
+            # piso
             f_hit = (building_floor_true[:, 1] == building_floor_pred[:, 1])
             hit_rate = np.logical_and(b_hit, f_hit)
             
